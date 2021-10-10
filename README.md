@@ -13,5 +13,6 @@ they will serve web page with respectively
 blue and green backgrounds, so you can do very
 literal blue/green deployment demos.
 
-The `jpetazzo/webcolor` image on the Docker Hub
-may or may not be a build of that code.
+There are two images on the Docker Hub using that code:
+- `jpetazzo/webcolor` (listens on port 8000)
+- `jpetazzo/color (listens on port 80, shows extra info)
