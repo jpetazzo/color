@@ -15,4 +15,4 @@ literal blue/green deployment demos.
 
 There are two images on the Docker Hub using that code:
 - `jpetazzo/webcolor` (listens on port 8000)
-- `jpetazzo/color (listens on port 80, shows extra info)
+- `jpetazzo/color` (listens on port 80, shows extra info)
