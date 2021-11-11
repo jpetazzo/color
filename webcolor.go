@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
         "runtime"
@@ -10,17 +11,68 @@ import (
 
 const template = `<!DOCTYPE html>` + "\r" +
 	`<html>` + "\r" +
-	`<body style="background: %s;">` + "\r" +
-	`<p style="background: white;">` + "\r" +
-	`This is pod %s, running on %s/%s, serving %s for %s.` + "\n" +
-	`</p>` + "\r" +
+	`<body style="background: %s; text-align: center;">` + "\r" +
+	`<div style="padding: 4em;"></div>` + "\r" +
+	`<span style="padding: 4em; background: %s;">` + "\r" +
+	`<span style="padding: 2px; background: white;">` + "\r" +
+	`%sThis is %s on %s/%s, serving %s for %s.` + "\n" +
+	`</span>` + "\r" +
+	`</span>` + "\r" +
 	`</body>` + "\r" +
 	`</html>` + "\r"
 
+func getHostname() string {
+	return os.Getenv("HOSTNAME")
+}
+
+func getNamespace() string {
+	{
+		namespace := os.Getenv("NAMESPACE")
+		if namespace != "" {
+			return namespace
+		}
+	}
+	{
+		namespace, err := ioutil.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace")
+		if err == nil {
+			return string(namespace)
+		}
+	}
+	return ""
+}
+
+func getCircle(color string) string {
+	circles := map[string]string{
+		"red":    "🔴",
+		"orange": "🟠",
+		"yellow": "🟡",
+		"green":  "🟢",
+		"blue":   "🔵",
+		"purple": "🟣",
+		"brown":  "🟤",
+		"black":  "⚫",
+		"white":  "⚪",
+	}
+	circle, exists := circles[color]
+	if exists {
+		return circle
+	} else {
+		return ""
+	}
+}
+
 func serve(w http.ResponseWriter, r *http.Request) {
-	hostname := os.Getenv("HOSTNAME")
-	color := strings.SplitN(hostname, "-", 2)[0]
-	html := fmt.Sprintf(template, color, hostname, runtime.GOOS, runtime.GOARCH, r.URL, r.RemoteAddr)
+	hostname := getHostname()
+	namespace := getNamespace()
+	displayName := ""
+	if namespace == "" {
+		displayName = hostname
+	} else {
+		displayName = "pod " + string(namespace) + "/" + hostname
+	}
+	podColor := strings.SplitN(hostname, "-", 2)[0]
+	circles := getCircle(namespace) + getCircle(podColor)
+	html := fmt.Sprintf(template, namespace, podColor, circles, displayName, runtime.GOOS, runtime.GOARCH, r.URL, r.RemoteAddr)
 	w.Write([]byte(html))
 }
 
