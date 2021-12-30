@@ -74,6 +74,7 @@ func serve(w http.ResponseWriter, r *http.Request) {
 	circles := getCircle(namespace) + getCircle(podColor)
 	html := fmt.Sprintf(template, namespace, podColor, circles, displayName, runtime.GOOS, runtime.GOARCH, r.URL, r.RemoteAddr)
 	w.Write([]byte(html))
+	fmt.Printf("%s %s %s %s %s\n", r.RemoteAddr, r.Method, r.URL, r.Proto, r.Header["User-Agent"])
 }
 
 func main() {
