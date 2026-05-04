@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: blue
+  name: blue
+spec:
+  ports:
+  - name: "80"
+    port: 80
+  selector:
+    app: blue
