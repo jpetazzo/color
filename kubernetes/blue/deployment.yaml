@@ -18,5 +18,8 @@ spec:
       containers:
       - image: jpetazzo/color
         name: color
+        resources:
+          requests:
+            memory: 60M
         ports:
         - containerPort: 80
