@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: blue
+    hello: world
   name: blue
 spec:
   replicas: 5
