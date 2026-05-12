@@ -4,6 +4,7 @@ metadata:
   labels:
     app: blue
     hello: world
+    another: label
   name: blue
 spec:
   replicas: 5
